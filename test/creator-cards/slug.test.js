@@ -23,4 +23,22 @@ describe('creator card slug helpers', () => {
 
     expect(slug).to.match(/^a-[a-f0-9]{6}$/);
   });
+
+  it('keeps generated slugs within the fifty character limit', async () => {
+    const title = 'Ada Designs Premium Interactive Campaign Strategy Packages';
+    const slug = await generateAvailableSlug(title, async () => false);
+
+    expect(slug).to.have.lengthOf.at.most(50);
+    expect(slug).to.equal('ada-designs-premium-interactive-campaign-strategy');
+  });
+
+  it('keeps suffixed generated slugs within the fifty character limit', async () => {
+    const title = 'Ada Designs Premium Interactive Campaign Strategy Packages';
+    const slug = await generateAvailableSlug(title, async (candidate) => {
+      return candidate === 'ada-designs-premium-interactive-campaign-strategy';
+    });
+
+    expect(slug).to.have.lengthOf(50);
+    expect(slug).to.match(/^ada-designs-premium-interactive-campaign-st-[a-f0-9]{6}$/);
+  });
 });

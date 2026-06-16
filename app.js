@@ -21,7 +21,11 @@ const server = createServer({
   enableCors: true,
 });
 
-const ENDPOINT_CONFIGS = [];
+const ENDPOINT_CONFIGS = [
+  {
+    path: './endpoints/creator-cards/',
+  },
+];
 
 function logEndpointMetaData(endpointConfigs) {
   const endpointData = [];

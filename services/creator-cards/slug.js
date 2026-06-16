@@ -11,11 +11,12 @@ function normalizeSlugSource(title) {
 }
 
 function appendRandomSuffix(base) {
-  return `${base || 'card'}-${randomBytes(6)}`;
+  const prefix = (base || 'card').slice(0, 43).replace(/-+$/g, '') || 'card';
+  return `${prefix}-${randomBytes(6)}`;
 }
 
 async function generateAvailableSlug(title, slugExists) {
-  const baseSlug = normalizeSlugSource(title);
+  const baseSlug = normalizeSlugSource(title).slice(0, 50).replace(/-+$/g, '');
   let candidate = baseSlug;
 
   if (candidate.length < 5 || (await slugExists(candidate))) {
