@@ -1,1 +1,3 @@
-module.exports = {};
+const CreatorCardMessages = require('./creator-card');
+
+module.exports = { CreatorCardMessages };
