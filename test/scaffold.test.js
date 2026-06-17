@@ -8,4 +8,8 @@ describe('project scaffold', () => {
       'Creator Card microservice API for the R17 backend engineer assessment'
     );
   });
+
+  it('defines the deployment start command', () => {
+    expect(pkg.scripts.start).to.equal('node bootstrap.js');
+  });
 });

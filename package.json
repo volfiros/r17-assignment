@@ -5,6 +5,7 @@
   "main": "app.js",
   "type": "commonjs",
   "scripts": {
+    "start": "node bootstrap.js",
     "test": "mocha --recursive --require dotenv/config",
     "sync-envs": "node sync-env-files"
   },

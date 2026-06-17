@@ -9,18 +9,6 @@ const { createQueue } = require('@app-core/queue');
 
 const canLogEndpointInformation = process.env.CAN_LOG_ENDPOINT_INFORMATION;
 
-createConnection({
-  uri: process.env.MONGODB_URI,
-});
-
-createQueue();
-
-const server = createServer({
-  port: process.env.PORT,
-  JSONLimit: '150mb',
-  enableCors: true,
-});
-
 const ENDPOINT_CONFIGS = [
   {
     path: './endpoints/creator-cards/',
@@ -64,11 +52,7 @@ function logEndpointMetaData(endpointConfigs) {
   });
 }
 
-if (canLogEndpointInformation) {
-  logEndpointMetaData(ENDPOINT_CONFIGS);
-}
-
-function setupEndpointHandlers(basePath, options = {}) {
+function setupEndpointHandlers(server, basePath, options = {}) {
   const dirs = fs.readdirSync(basePath);
 
   dirs.forEach((file) => {
@@ -82,8 +66,30 @@ function setupEndpointHandlers(basePath, options = {}) {
   });
 }
 
-ENDPOINT_CONFIGS.forEach((config) => {
-  setupEndpointHandlers(config.path, config.options);
-});
+async function startApp() {
+  await createConnection({
+    uri: process.env.MONGODB_URI,
+  });
 
-server.startServer();
+  createQueue();
+
+  const server = createServer({
+    port: process.env.PORT,
+    JSONLimit: '150mb',
+    enableCors: true,
+  });
+
+  if (canLogEndpointInformation) {
+    logEndpointMetaData(ENDPOINT_CONFIGS);
+  }
+
+  ENDPOINT_CONFIGS.forEach((config) => {
+    setupEndpointHandlers(server, config.path, config.options);
+  });
+
+  server.startServer();
+
+  return server;
+}
+
+module.exports = startApp();
