@@ -8,6 +8,9 @@ const { createConnection } = require('@app-core/mongoose');
 const { createQueue } = require('@app-core/queue');
 
 const canLogEndpointInformation = process.env.CAN_LOG_ENDPOINT_INFORMATION;
+const requestTimeout = Number(process.env.REQUEST_TIMEOUT_MS || 120000);
+const headersTimeout = Number(process.env.HEADERS_TIMEOUT_MS || 125000);
+const keepAliveTimeout = Number(process.env.KEEP_ALIVE_TIMEOUT_MS || 65000);
 
 const ENDPOINT_CONFIGS = [
   {
@@ -77,6 +80,9 @@ async function startApp() {
     port: process.env.PORT,
     JSONLimit: '150mb',
     enableCors: true,
+    requestTimeout,
+    headersTimeout,
+    keepAliveTimeout,
   });
 
   if (canLogEndpointInformation) {

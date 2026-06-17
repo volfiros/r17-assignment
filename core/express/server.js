@@ -19,6 +19,7 @@ const expressEnums = require('./enums');
  */
 function Server(serverConfig = {}) {
   const express = require('express');
+  const http = require('http');
   const { appLogger } = require('@app-core/logger');
   const { ERROR_STATUS_CODE_MAPPING } = require('@app-core/errors');
   const cors = require('cors');
@@ -67,6 +68,9 @@ function Server(serverConfig = {}) {
     port = 8811,
     JSONLimit = '50mb',
     enableCors = false,
+    requestTimeout,
+    headersTimeout,
+    keepAliveTimeout,
     // generateRequestIds = false
   } = serverConfig;
 
@@ -308,9 +312,17 @@ function Server(serverConfig = {}) {
         message: 'Some error occurred.',
       });
     });
-    app.listen(port, () => {
+    const httpServer = http.createServer(app);
+
+    if (requestTimeout) httpServer.requestTimeout = requestTimeout;
+    if (headersTimeout) httpServer.headersTimeout = headersTimeout;
+    if (keepAliveTimeout) httpServer.keepAliveTimeout = keepAliveTimeout;
+
+    httpServer.listen(port, () => {
       appLogger(`Listening at port ${port}`);
     });
+
+    return httpServer;
   }
 
   return {
