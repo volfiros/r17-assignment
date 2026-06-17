@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: creator-card-api
+    runtime: node
+    plan: starter
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeployTrigger: commit
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: USE_MOCK_MODEL
+        value: "0"
+      - key: LOG_APP_REQUEST
+        value: "0"
+      - key: CAN_LOG_ENDPOINT_INFORMATION
+        value: "0"
+      - key: MONGODB_URI
+        sync: false
